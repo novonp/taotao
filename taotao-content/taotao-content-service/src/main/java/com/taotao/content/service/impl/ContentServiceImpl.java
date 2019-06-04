@@ -23,6 +23,9 @@ public class ContentServiceImpl implements ContentService {
     @Value("${CONTENT_KEY}")
     private String CONTENT_KEY;
 
+    @Value("${Expiry_TIME}")
+    private Integer Expiry_TIME;
+
     @Autowired
     private TbContentMapper tbContentMapper;
 
@@ -43,6 +46,7 @@ public class ContentServiceImpl implements ContentService {
         jedisClient.hdel(CONTENT_KEY,tbContent.getCategoryId().toString());
         String hget = jedisClient.hget(CONTENT_KEY, tbContent.getCategoryId().toString());
         System.out.println(hget);
+        jedisClient.expire(CONTENT_KEY,Expiry_TIME);
         return TaotaoResult.ok();
     }
 
@@ -53,11 +57,13 @@ public class ContentServiceImpl implements ContentService {
          * 如果没有 代码则往下继续执行  查询sql
          */
         String json = jedisClient.hget(CONTENT_KEY,categoryId+"");
+        jedisClient.expire(CONTENT_KEY,Expiry_TIME);
         System.out.println(json);
         //isnoneblank
         if (StringUtils.isNotBlank(json)){
             List<TbContent> tbContent =  JsonUtils.jsonToList(json,TbContent.class);
             System.out.println("从缓存中拿到的数据");
+
             return tbContent;
         }
         List<TbContent> result = tbContentMapper.findContentByCategoryId(categoryId);
@@ -73,6 +79,7 @@ public class ContentServiceImpl implements ContentService {
         /**
          * 把从数据库中得到的数据存放在redis中 return返回
           */
+        jedisClient.expire(CONTENT_KEY,Expiry_TIME);
     return result;
     }
 }
