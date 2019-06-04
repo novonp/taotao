@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.taotao.mapper.TbContentMapper" >
+    <select id="findContentByCategoryId" parameterType="long" resultType="com.taotao.pojo.TbContent">
+        select * from tbcontent where categoryId = #{categoryId}
+    </select>
+    <insert id="insertContent" parameterType="com.taotao.pojo.TbContent">
+        insert into tbcontent(categoryId, title, subTitle, titleDesc, url, pic, pic2, content, created, updated)
+        value (#{categoryId},#{title},#{subTitle},#{titleDesc},#{url},#{pic},#{pic2},#{content},#{created},#{updated})
+    </insert>
+</mapper>

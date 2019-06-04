@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://code.alibabatech.com/schema/dubbo 
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+
+
+	<context:component-scan base-package="com.taotao.controller" />
+	<mvc:annotation-driven />
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>	
+	
+	<!-- 引用dubbo服务 -->
+	<dubbo:application name="taotao-manager-web"/>
+	<dubbo:registry protocol="zookeeper" address="192.168.89.105:2181"/>
+	<!-- 接收者   -->	
+	<dubbo:reference interface="com.taotao.service.ItemService" id="itemService" />
+	<!--目录分类接口-->
+	<dubbo:reference interface="com.taotao.service.ItemCatService" id="ItemCatServiceImpl" />
+	<!--文件上传接口-->
+	<dubbo:reference interface="com.taotao.service.PictureService" id="pictureServiceImpl" />
+	<!--内容分类接口-->
+	<dubbo:reference interface="com.taotao.content.service.ContentCategoryService" id="contentCategoryService" />
+	<!--广告分类接口-->
+	<dubbo:reference interface="com.taotao.content.service.ContentService" id="contentService" />
+	<!--查询solr接口-->
+	<dubbo:reference interface="com.taotao.search.service.SearchItemService" id="searchItemService" />
+
+	<!--
+		配置静态资源访问
+				mapping:url地址
+				localhost:项目中的位置
+				http://localhost:8080/***/abc.css/taotao.css
+	-->
+	<mvc:resources mapping="/css/**" location="/WEB-INF/css/"/>
+	<mvc:resources mapping="/js/**" location="/WEB-INF/js/"/>
+
+
+	<!-- 定义文件上传解析器 -->
+	<bean id="multipartResolver"
+		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 设定默认编码 -->
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<!-- 设定文件上传的最大值5MB，5*1024*1024 -->
+		<property name="maxUploadSize" value="5242880"></property>
+	</bean>
+
+</beans>

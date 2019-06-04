@@ -1,0 +1,41 @@
+文件上传总结:
+        1.使用ftp代码上传图片
+                //创建ftp客户端对象
+                        FTPClient client = new FTPClient();
+                        //ftp客户端连接ftp服务器
+                        client.connect("192.168.89.128");
+                        //登录
+                        client.login("ftpuser","ftpuser");
+                        //解决上传0KB问题
+                        client.enterLocalPassiveMode();
+                        //上传图片
+                            //1.上传的类型(为2进制   0  和  1)
+                            client.setFileType(FTP.BINARY_FILE_TYPE);
+                            //创建上传图片路径
+                        FileInputStream fis = new FileInputStream(new File("E:\\GET\\Git\\yby.jpg"));
+                            //2.需要一个流对象(上传后的路径)
+                        client.storeFile("/home/ftpuser/www/images /non.jpg", fis);
+                        //关闭ftp服务器
+                        client.logout();
+        2.把上面的代码封装到一个工具类里面
+            FTPUtil
+        3.定义url地址
+
+        4.springmvc通过MultipartFile对象获取上传图片，需要配置springmvc.xml
+                <!-- 定义文件上传解析器 -->
+                	<bean id="multipartResolver"
+                		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+                		<!-- 设定默认编码 -->
+                		<property name="defaultEncoding" value="UTF-8"></property>
+                		<!-- 设定文件上传的最大值5MB，5*1024*1024 -->
+                		<property name="maxUploadSize" value="5242880"></property>
+                	</bean>
+
+        5.dubbo下不能直接传MultipartFile对象，把这个对象变成byte数组
+                PictureResult uploadFile(byte[] bytes, String name);
+
+        6.再service里面把byte数组变成inputSteam对象或者其它子类
+                ByteArrayInputStream pis = new ByteArrayInputStream(bytes);
+
+        7.如果不报错，返回的结果因该是 error = 0 和图片的url地址
+          如果报错，返回的结果因该是 error = 1 和message = "上传图片有误"
