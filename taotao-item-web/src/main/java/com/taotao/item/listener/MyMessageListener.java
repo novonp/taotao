@@ -3,6 +3,7 @@ package com.taotao.item.listener;
 import com.taotao.item.pojo.Item;
 import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbItemDesc;
+import com.taotao.pojo.TbItemParamItem;
 import com.taotao.service.ItemService;
 import freemarker.core.ParseException;
 import freemarker.template.*;
@@ -38,9 +39,11 @@ public class MyMessageListener  implements MessageListener{
                 Item item = new Item(tbItem);
                 //商品描述信息
                 TbItemDesc itemDesc = itemService.findItemDescByItemId(Long.valueOf(id));
+                String itemIdss = itemService.findItemParamByItemId(Long.valueOf(id));
                 Map map = new HashMap();
                 map.put("item",item);
                 map.put("itemDesc",itemDesc);
+                map.put("itemIdss",itemIdss);
                 Configuration configuration = freeMarkerConfig.getConfiguration();
                 Template template = configuration.getTemplate("item.ftl");
                 writer = new BufferedWriter(new FileWriter("E:\\vov\\"+id+".html"));
@@ -67,7 +70,7 @@ public class MyMessageListener  implements MessageListener{
                 }
             }
         }
-        /**
+        /**页面静态化
          * 1.创建一个Configuration对象。
          * 	Configuration configuration = new Configuration();
          * 	2.设置模板文件路径(.ftl结尾)

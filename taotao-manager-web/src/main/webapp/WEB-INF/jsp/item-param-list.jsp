@@ -2,7 +2,7 @@
 <table class="easyui-datagrid" id="itemParamList" title="商品列表" 
        data-options="singleSelect:false,collapsible:true,pagination:true,url:'/item/param/list',method:'get',pageSize:30,toolbar:itemParamListToolbar">
     <thead>
-        <tr>
+         <tr>
         	<th data-options="field:'ck',checkbox:true"></th>
         	<th data-options="field:'id',width:60">ID</th>
         	<th data-options="field:'itemCatId',width:80">商品类目ID</th>

@@ -98,6 +98,9 @@
 	<!--文件上传接口-->
 	<dubbo:service interface="com.taotao.service.PictureService"
 				   ref="pictureServiceImpl" />
+	<!--规格参数接口-->
+	<dubbo:service interface="com.taotao.service.ItemParamService"
+				   ref="itemParamServiceImpl" />
 
 	<!--
 		真正可以产生connection的connectionFaxtion，由对应的jms服务厂商提供

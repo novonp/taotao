@@ -35,8 +35,12 @@ public class ItemController {
 
 	@RequestMapping("/save")
 	@ResponseBody
-	public TaotaoResult saveItem(TbItem tbItem,String desc){
-		TaotaoResult result = itemService.addItem(tbItem, desc);
+	/**
+	 * tbItem：商品基本信息
+	 * desc: 商品描述信息
+	 */
+	public TaotaoResult saveItem(TbItem tbItem,String desc,String itemParams){
+		TaotaoResult result = itemService.addItem(tbItem,desc,itemParams);
 		return result;
 	}
 }

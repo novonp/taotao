@@ -3,7 +3,9 @@ package com.taotao.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.taotao.mapper.TbItemDescMapper;
+import com.taotao.mapper.TbItemParamItemMapper;
 import com.taotao.pojo.TbItemDesc;
+import com.taotao.pojo.TbItemParamItem;
 import com.taotao.result.EasyUIResult;
 import com.taotao.result.JsonUtils;
 import com.taotao.result.TaotaoResult;
@@ -24,6 +26,7 @@ import com.taotao.service.ItemService;
 import javax.jms.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ItemServiceImpl implements ItemService{
@@ -41,13 +44,20 @@ public class ItemServiceImpl implements ItemService{
 	private Destination topicDestination;
 
 	@Autowired
+	private TbItemParamItemMapper tbItemParamItemMapper;
+
+	//加入缓存必不可少部分
+	@Autowired
 	private JedisClient jedisClient;
 	@Value("${ITEM_INFO}")
 	private String ITEM_INFO;
+	//基本信息
 	@Value("${BASE}")
 	private String BASE;
+	//过期时间
 	@Value("${Expiry_TIME}")
 	private Integer Expiry_TIME;
+	//描述信息
 	@Value("${DESC}")
 	private String DESC;
 	/**
@@ -99,7 +109,7 @@ public class ItemServiceImpl implements ItemService{
 	}
 
 	@Override
-	public TaotaoResult addItem(TbItem tbItem, String desc) {
+	public TaotaoResult addItem(TbItem tbItem, String desc,String itemParams) {
 		//生成商品id
 		final long id = IDUtils.genItemId();
 		Date time = new Date();
@@ -114,6 +124,8 @@ public class ItemServiceImpl implements ItemService{
 
 		//调用商品dao的基本信息
 		tbItemMapper.insert(tbItem);
+
+
 		//调用商品描述信息
 		TbItemDesc itemDesc = new TbItemDesc();
 		//描述信息中的id
@@ -122,6 +134,15 @@ public class ItemServiceImpl implements ItemService{
 		itemDesc.setUpdated(time);
 		itemDesc.setItemDesc(desc);
 		tbItemDescMapper.insert(itemDesc);
+
+
+		//商品规格参数信息
+		TbItemParamItem tbItemParamItem = new TbItemParamItem();
+		tbItemParamItem.setItemId(id);
+		tbItemParamItem.setCreated(time);
+		tbItemParamItem.setUpdated(time);
+		tbItemParamItem.setParamData(itemParams);
+		tbItemParamItemMapper.insert(tbItemParamItem);
 
 
 		jmsTemplate.send(topicDestination, new MessageCreator() {
@@ -163,15 +184,41 @@ public class ItemServiceImpl implements ItemService{
 			return tbItemDesc;
 		}
 
-
 		TbItemDesc itemDesc = tbItemMapper.findTbItemDescByItemId(itemId);
-		//跟上面一样 75
 		//加入缓存(把商品信息存入redis中)  (根据key (ITEM_INFO+":"+itemId+BASE) 取value ) JsonUtils.objectToJson(tbItem)  json格式
 		jedisClient.set(ITEM_INFO+":"+itemId+DESC,JsonUtils.objectToJson(itemDesc));
 		//设置缓存过期时间
 		jedisClient.expire("ITEM_INFO+\":\"+itemId+DESC",Expiry_TIME);
-
 		return itemDesc;
+	}
+
+	@Override
+	public String findItemParamByItemId(Long itemId) {
+        TbItemParamItem param = tbItemParamItemMapper.findItemParamByItemId(itemId);
+        //得到json格式  数据库中tbitemParamitem表中paramData字段中的json数据
+        String paramData = param.getParamData();
+        //因为前端没有写规格参数页面所以只能写好一个传递过去
+        List<Map> jsonList = JsonUtils.jsonToList(paramData, Map.class);
+        //要拼接字符串 ， 所以 用stringbuffer来拼接 最后toString 是吧stringbuffer转化成为string
+        StringBuffer sb = new StringBuffer();
+        sb.append("<table cellpadding=\"0\" cellspacing=\"1\" width=\"100%\" border=\"0\" class=\"Ptable\">\n");
+        sb.append("    <tbody>\n");
+        for (Map m1 : jsonList) {
+            sb.append("        <tr>\n");
+            sb.append("            <th class=\"tdTitle\" colspan=\"2\">" + m1.get("group") + "</th>\n");
+            sb.append("        </tr>\n");
+            List<Map> list2 = (List<Map>) m1.get("params");
+            for (Map m2 : list2) {
+                sb.append("        <tr>\n");
+                sb.append("            <td class=\"tdTitle\">" + m2.get("k") + "</td>\n");
+                sb.append("            <td>" + m2.get("v") + "</td>\n");
+                sb.append("        </tr>\n");
+            }
+        }
+        sb.append("    </tbody>\n");
+        sb.append("</table>");
+
+        return sb.toString();
 	}
 
 }

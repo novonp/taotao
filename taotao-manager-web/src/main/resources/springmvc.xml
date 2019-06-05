@@ -39,6 +39,8 @@
 	<dubbo:reference interface="com.taotao.content.service.ContentService" id="contentService" />
 	<!--查询solr接口-->
 	<dubbo:reference interface="com.taotao.search.service.SearchItemService" id="searchItemService" />
+	<!--规格参数接口-->
+	<dubbo:reference interface="com.taotao.service.ItemParamService" id="itemParamService" />
 
 	<!--
 		配置静态资源访问

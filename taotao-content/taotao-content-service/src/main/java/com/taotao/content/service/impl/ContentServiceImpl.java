@@ -46,6 +46,7 @@ public class ContentServiceImpl implements ContentService {
         jedisClient.hdel(CONTENT_KEY,tbContent.getCategoryId().toString());
         String hget = jedisClient.hget(CONTENT_KEY, tbContent.getCategoryId().toString());
         System.out.println(hget);
+        //缓存过期时间
         jedisClient.expire(CONTENT_KEY,Expiry_TIME);
         return TaotaoResult.ok();
     }
@@ -57,6 +58,7 @@ public class ContentServiceImpl implements ContentService {
          * 如果没有 代码则往下继续执行  查询sql
          */
         String json = jedisClient.hget(CONTENT_KEY,categoryId+"");
+        //缓存过期时间
         jedisClient.expire(CONTENT_KEY,Expiry_TIME);
         System.out.println(json);
         //isnoneblank
@@ -79,6 +81,7 @@ public class ContentServiceImpl implements ContentService {
         /**
          * 把从数据库中得到的数据存放在redis中 return返回
           */
+        //缓存过期时间
         jedisClient.expire(CONTENT_KEY,Expiry_TIME);
     return result;
     }
