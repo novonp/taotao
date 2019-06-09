@@ -45,4 +45,12 @@ public interface ItemService {
 	 * @return 指定商品的规格参数信息
 	 */
     String findItemParamByItemId(Long itemId);
+
+	/**
+	 * 查询规格参数表的所有记录
+	 * @param page 当前页面
+	 * @param rows 总记录条数
+	 * @return EasyUIResult里面有total(总记录条数)和rows(每一页现实的记录条数)
+	 */
+    EasyUIResult getItemParamList(Integer page, Integer rows);
 }

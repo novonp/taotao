@@ -38,9 +38,23 @@ public class ItemController {
 	/**
 	 * tbItem：商品基本信息
 	 * desc: 商品描述信息
+	 * itemParams:商品规格参数
 	 */
 	public TaotaoResult saveItem(TbItem tbItem,String desc,String itemParams){
 		TaotaoResult result = itemService.addItem(tbItem,desc,itemParams);
 		return result;
+	}
+
+	/**
+	 * 商品规格参数
+	 * @param page 页面
+	 * @param rows 总记录条数
+	 * @return
+	 */
+	@RequestMapping("/param/list")
+	@ResponseBody
+	public EasyUIResult getItemParamList(Integer page,Integer rows){
+		EasyUIResult list = itemService.getItemParamList(page,rows);
+		return list;
 	}
 }

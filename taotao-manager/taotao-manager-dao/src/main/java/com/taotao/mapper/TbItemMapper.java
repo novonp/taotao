@@ -2,6 +2,7 @@ package com.taotao.mapper;
 
 import com.taotao.pojo.TbItem;
 import com.taotao.pojo.TbItemDesc;
+import com.taotao.pojo.TbItemParamItem;
 import org.apache.ibatis.annotations.Select;
 
 import java.security.acl.LastOwnerException;
@@ -35,4 +36,11 @@ public interface TbItemMapper {
 	 * @return 指定id下的商品描述信息
 	 */
 	TbItemDesc findTbItemDescByItemId(Long itemId);
+
+	/**
+	 * 查询所有规格信息
+	 * @return
+	 */
+	@Select("SELECT * FROM tbitemparamitem")
+	List<TbItemParamItem> findTbItemParam();
 }

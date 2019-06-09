@@ -221,4 +221,20 @@ public class ItemServiceImpl implements ItemService{
         return sb.toString();
 	}
 
+	/**
+	 * 商品规格参数
+	 * @param page 当前页面
+	 * @param rows 总记录条数
+	 * @return
+	 */
+	@Override
+	public EasyUIResult getItemParamList(Integer page, Integer rows) {
+		//使用分页插件，设置我们的分页信息
+		PageHelper.startPage(page,rows);
+		List<TbItemParamItem> tbItemParam = tbItemMapper.findTbItemParam();
+		PageInfo<TbItemParamItem> pageInfo1 = new PageInfo<>(tbItemParam);
+		EasyUIResult result = new EasyUIResult(pageInfo1.getTotal(),tbItemParam);
+		return result;
+	}
+
 }
