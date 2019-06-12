@@ -34,6 +34,8 @@
 	 -->
 	<dubbo:reference interface="com.taotao.content.service.ContentService" id="contentService" />
 
+	<dubbo:reference interface="com.taotao.service.ItemCatService" id="itemCatService" />
+
 
 	<!-- 定义文件上传解析器 -->
 	<bean id="multipartResolver"
@@ -43,5 +45,30 @@
 		<!-- 设定文件上传的最大值5MB，5*1024*1024 -->
 		<property name="maxUploadSize" value="5242880"></property>
 	</bean>
+
+	<!--避免ajax请求出现406错误-->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="false"/>
+		<property name="favorParameter" value="false"/>
+		<property name="ignoreAcceptHeader" value="false"/>
+		<property name="mediaTypes">
+			<value>
+				atom = application/atom+xml
+				html = text/html
+				json = application/json
+				* = */*
+			</value>
+		</property>
+	</bean>
+
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" >
+		<mvc:message-converters register-defaults="true">
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list><value>text/html;charset=UTF-8</value></list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
 
 </beans>

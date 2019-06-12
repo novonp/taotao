@@ -18,13 +18,15 @@
 	<context:property-placeholder location="classpath:*.properties" />
 
 	<context:component-scan base-package="com.taotao.sso.controller" />
+	<!-- 注解驱动 配置处理器映射器和处理器适配器 -->
 	<mvc:annotation-driven />
-	
+	<!-- 帮我们配置前缀和后缀 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
-	</bean>	
-	
+	</bean>
+
+
 	<!-- 引用dubbo服务 -->
 	<dubbo:application name="taotao-sso-web"/>
 	<dubbo:registry protocol="zookeeper" address="192.168.89.105:2181"/>
@@ -40,5 +42,12 @@
 		<!-- 设定文件上传的最大值5MB，5*1024*1024 -->
 		<property name="maxUploadSize" value="5242880"></property>
 	</bean>
+
+	<!--
+		配置静态资源访问
+	-->
+	<mvc:resources mapping="/css/**" location="/WEB-INF/css/"/>
+	<mvc:resources mapping="/js/**" location="/WEB-INF/js/"/>
+    <mvc:resources location="/WEB-INF/images/" mapping="/images/**"/>
 
 </beans>

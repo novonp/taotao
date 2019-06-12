@@ -1,6 +1,7 @@
 package com.taotao.service;
 
 import com.taotao.result.EasyUITreeNode;
+import com.taotao.result.ItemCatResult;
 
 import java.util.List;
 
@@ -12,4 +13,6 @@ public interface ItemCatService {
      * @return EasyUITreeNode对象里面有三个参数(id,name,state("closed","open"))
      */
     List<EasyUITreeNode> getCatList(long parentId);
+
+    ItemCatResult findItemCatAll(long parentId);
 }

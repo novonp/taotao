@@ -3,12 +3,15 @@ package com.taotao.portal.controller;
 import com.taotao.content.service.ContentService;
 import com.taotao.pojo.TbContent;
 import com.taotao.portal.pojo.Ad1Node;
+import com.taotao.result.ItemCatResult;
 import com.taotao.result.JsonUtils;
+import com.taotao.service.ItemCatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +31,9 @@ public class IndexController {
 
     @Autowired
     private ContentService contentService;
+
+    @Autowired
+    private ItemCatService itemCatService;
 
     @RequestMapping("/index")
     public String showIndex(Model model){
@@ -49,6 +55,14 @@ public class IndexController {
         //把一个集合对象变成json格式的数据
         model.addAttribute("ad1", JsonUtils.objectToJson(ad1));
         return "index";
+    }
+
+    //http://localhost:8082/item/cat/itemcat/all.html
+    @RequestMapping("/item/cat/itemcat/all")
+    @ResponseBody
+    public ItemCatResult queryAll(){
+        ItemCatResult result = itemCatService.findItemCatAll((long) 0);
+        return result;
     }
 
 }

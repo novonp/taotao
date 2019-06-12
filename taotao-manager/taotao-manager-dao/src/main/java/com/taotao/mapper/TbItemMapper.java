@@ -21,7 +21,9 @@ public interface TbItemMapper {
 	 * 查询所有的商品信息
 	 * @return 返回所有商品的集合对象
 	 */
-	@Select("SELECT * FROM tbitem")
+	/*@Select("SELECT * FROM tbitem")*/
+	//查询状态为1的
+	@Select("SELECT * FROM tbitem WHERE status = 1")
 	List<TbItem> findTbItems();
 
 	/**

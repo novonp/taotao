@@ -236,5 +236,4 @@ public class ItemServiceImpl implements ItemService{
 		EasyUIResult result = new EasyUIResult(pageInfo1.getTotal(),tbItemParam);
 		return result;
 	}
-
 }

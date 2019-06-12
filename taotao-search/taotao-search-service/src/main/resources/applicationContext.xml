@@ -99,9 +99,9 @@
 				   ref="itemServiceImpl" />
 	-->
 	<dubbo:service interface="com.taotao.search.service.SearchItemService"
-				   ref="searchItemServiceImpl" timeout="30000"/>
+				   ref="searchItemServiceImpl" timeout="40000"/>
 	<dubbo:service interface="com.taotao.search.service.SearchService"
-				   ref="searchServiceImpl" timeout="30000"/>
+				   ref="searchServiceImpl" timeout="40000"/>
 
 
 	<!--
