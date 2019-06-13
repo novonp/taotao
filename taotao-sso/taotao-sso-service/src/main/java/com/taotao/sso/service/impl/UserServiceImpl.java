@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
         tbUser.setUpdated(date);
         //密码需要加密  (把密码加密在变成数组)
         tbUser.setPassWord(DigestUtils.md5DigestAsHex(tbUser.getPassWord().getBytes()));
+
         tbUserMapper.insert(tbUser);
         return TaotaoResult.ok(true);
     }
@@ -129,8 +130,9 @@ public class UserServiceImpl implements UserService {
         String token = UUID.randomUUID().toString().replace("-", "");
         //缓存中的用户信息是不需要密码
         tbUser.setPassWord(null);
+        //key为:USER_INFO+":"+token     value:用户信息缺少password的json格式存入redis中
         jedisClient.set(USER_INFO+":"+token, JsonUtils.objectToJson(tbUser));
-        //缓存过期时间
+        //缓存过期时间 (1800)
         jedisClient.expire(USER_INFO+":"+token,SESSION_EXPIRE);
 
         return TaotaoResult.ok(token);

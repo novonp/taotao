@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.taotao.mapper.TbOrderShippingMapper" >
+
+    <insert id="insertOrderShipping" parameterType="com.taotao.pojo.TbOrderShipping">
+        insert into tbordershipping (orderId, receiverName, receiverPhone, receiverMobile, receiverState, receiverCity, receiverDistrict, receiverAddress, receiverZip, created, updated)
+        VALUE (#{orderId},#{receiverName},#{receiverPhone},#{receiverMobile},#{receiverState},#{receiverCity},#{receiverDistrict},#{receiverAddress},#{receiverZip},#{created},#{updated})
+    </insert>
+
 </mapper>
